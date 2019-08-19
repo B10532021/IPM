@@ -14,8 +14,8 @@ class Info(object):
         return self.dct[name]
 
 
-I = cv2.imread('Images/pic1.jpg')
-R = I[:, :, 1]
+I = cv2.imread('Images/road8.jpg')
+R = I[:, :, :]
 height = int(I.shape[0]) # row y
 width = int(I.shape[1]) # col x
 
@@ -25,7 +25,7 @@ cameraInfo = Info({
     "opticalCenterX": int(width / 2), # 638.1608,        # optical center x
     "opticalCenterY": int(height / 2), # 738.8648,       # optical center y
     "cameraHeight": 1500, # 1879.8,  # camera height in `mm`
-    "pitch": 15.5,           # rotation degree around x
+    "pitch": 22,           # rotation degree around x
     "yaw": 0.0,              # rotation degree around y
     "roll": 0              # rotation degree around z
 })
@@ -34,9 +34,9 @@ ipmInfo = Info({
     "inputHeight": height,
     "outWidth": int(width*3/4),
     "outHeight": int(height*3/4),
-    "left": 128,
-    "right": width-128,
-    "top": 450,
+    "left": 300,
+    "right": width-300,
+    "top": 2350,
     "bottom": height
 })
 # IPM
@@ -44,7 +44,6 @@ vpp = GetVanishingPoint(cameraInfo)
 vp_x = vpp[0][0]
 vp_y = vpp[1][0]
 ipmInfo.top = float(max(int(vp_y), ipmInfo.top))
-print(vp_y)
 uvLimitsp = np.array([[vp_x, ipmInfo.right, ipmInfo.left, vp_x],
              [ipmInfo.top, ipmInfo.top, ipmInfo.top, ipmInfo.bottom]], np.float32)
 
@@ -55,8 +54,9 @@ xfMin = min(row1)
 xfMax = max(row1)
 yfMin = min(row2)
 yfMax = max(row2)
-xyRatio = int((xfMax - xfMin)/(yfMax - yfMin))
-outImage = np.zeros((640, xyRatio*640), np.float32)
+xyRatio = (xfMax - xfMin)/(yfMax - yfMin)
+outImage = np.zeros((640,int(640), 4), np.float32)
+outImage[:,:,3] = 255
 outRow = int(outImage.shape[0])
 outCol = int(outImage.shape[1])
 stepRow = (yfMax - yfMin)/outRow
@@ -83,7 +83,7 @@ for i in range(0, outRow):
         vi = uvGrid[1, i*outCol+j]
         #print(ui, vi)
         if ui < ipmInfo.left or ui > ipmInfo.right or vi < ipmInfo.top or vi > ipmInfo.bottom:
-            outImage[i, j] = means
+            outImage[i, j] = 0.0
         else:
             x1 = np.int32(ui)
             x2 = np.int32(ui+0.5)
@@ -91,13 +91,16 @@ for i in range(0, outRow):
             y2 = np.int32(vi+0.5)
             x = ui-float(x1)
             y = vi-float(y1)
-            val = float(RR[y1, x1])*(1-x)*(1-y)+float(RR[y1, x2])*x*(1-y)+float(RR[y2, x1])*(1-x)*y+float(RR[y2, x2])*x*y
-            outImage[i, j] = val
+            outImage[i, j, 0] = float(RR[y1, x1, 0])*(1-x)*(1-y)+float(RR[y1, x2, 0])*x*(1-y)+float(RR[y2, x1, 0])*(1-x)*y+float(RR[y2, x2, 0])*x*y
+            outImage[i, j, 1] = float(RR[y1, x1, 1])*(1-x)*(1-y)+float(RR[y1, x2, 1])*x*(1-y)+float(RR[y2, x1, 1])*(1-x)*y+float(RR[y2, x2, 1])*x*y
+            outImage[i, j, 2] = float(RR[y1, x1, 2])*(1-x)*(1-y)+float(RR[y1, x2, 2])*x*(1-y)+float(RR[y2, x1, 2])*(1-x)*y+float(RR[y2, x2, 2])*x*y
 
 # show the result
 while True:
     cv2.imshow('img', outImage)
     if cv2.waitKey(20) & 0xFF == 27:
         break
+
+outImage = outImage * 255
 # save image
-# cv2.imwrite('pic_ipm.jpg',outImage)
+cv2.imwrite('Images/road8_ipm.png',outImage)
