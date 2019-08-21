@@ -14,29 +14,27 @@ class Info(object):
         return self.dct[name]
 
 
-I = cv2.imread('Images/road9.jpg')
+I = cv2.imread('Images/pic.jpg')
 R = I[:, :, :]
 height = int(I.shape[0]) # row y
 width = int(I.shape[1]) # col x
 
 cameraInfo = Info({
-    "focalLengthX": 3000, # 1200.6831,         # focal length x
-    "focalLengthY": 4000, # 1200.6831,         # focal length y
+    "focalLengthX": 700, # 1200.6831,         # focal length x
+    "focalLengthY": 700, # 1200.6831,         # focal length y
     "opticalCenterX": int(width / 2), # 638.1608,        # optical center x
     "opticalCenterY": int(height / 2), # 738.8648,       # optical center y
     "cameraHeight": 1500, # 1879.8,  # camera height in `mm`
-    "pitch": 5,           # rotation degree around x
+    "pitch": 15,           # rotation degree around x
     "yaw": 0.0,              # rotation degree around y
     "roll": 0              # rotation degree around z
 })
 ipmInfo = Info({
     "inputWidth": width,
     "inputHeight": height,
-    "outWidth": int(width*3/4),
-    "outHeight": int(height*3/4),
-    "left": 300,
-    "right": width-300,
-    "top": height * 0.6,
+    "left": 100,
+    "right": width-100,
+    "top": 380,
     "bottom": height
 })
 # IPM
@@ -55,7 +53,7 @@ xfMax = max(row1)
 yfMin = min(row2)
 yfMax = max(row2)
 xyRatio = (xfMax - xfMin)/(yfMax - yfMin)
-outImage = np.zeros((640,int(640), 4), np.float32)
+outImage = np.zeros((640,640,4), np.float32)
 outImage[:,:,3] = 255
 outRow = int(outImage.shape[0])
 outCol = int(outImage.shape[1])
@@ -103,4 +101,4 @@ while True:
 
 outImage = outImage * 255
 # save image
-cv2.imwrite('road9_ipm.png',outImage)
+cv2.imwrite('Images/pic_ipm.png',outImage)
