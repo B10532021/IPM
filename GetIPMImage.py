@@ -14,18 +14,18 @@ class Info(object):
         return self.dct[name]
 
 
-I = cv2.imread('Images/road8.jpg')
+I = cv2.imread('Images/road9.jpg')
 R = I[:, :, :]
 height = int(I.shape[0]) # row y
 width = int(I.shape[1]) # col x
 
 cameraInfo = Info({
-    "focalLengthX": 700, # 1200.6831,         # focal length x
-    "focalLengthY": 700, # 1200.6831,         # focal length y
+    "focalLengthX": 3000, # 1200.6831,         # focal length x
+    "focalLengthY": 4000, # 1200.6831,         # focal length y
     "opticalCenterX": int(width / 2), # 638.1608,        # optical center x
     "opticalCenterY": int(height / 2), # 738.8648,       # optical center y
     "cameraHeight": 1500, # 1879.8,  # camera height in `mm`
-    "pitch": 22,           # rotation degree around x
+    "pitch": 5,           # rotation degree around x
     "yaw": 0.0,              # rotation degree around y
     "roll": 0              # rotation degree around z
 })
@@ -36,7 +36,7 @@ ipmInfo = Info({
     "outHeight": int(height*3/4),
     "left": 300,
     "right": width-300,
-    "top": 2350,
+    "top": height * 0.6,
     "bottom": height
 })
 # IPM
@@ -103,4 +103,4 @@ while True:
 
 outImage = outImage * 255
 # save image
-cv2.imwrite('Images/road8_ipm.png',outImage)
+cv2.imwrite('road9_ipm.png',outImage)

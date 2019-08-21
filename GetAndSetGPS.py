@@ -41,7 +41,8 @@ def PhotoGPS(photoPath, ipmPhotoPath):
 
     lng = longitude if "E" == longitudeRef else 0 - longitude
     lat = latitude if "N" == latitudeRef else 0 - latitude
-    SetGPSLocation(ipmPhotoPath, lat, lng)
+    print(exifDict['EXIF ExifImageWidth'], exifDict['EXIF ExifImageLength'], exifDict['EXIF FocalLength'], exifDict['EXIF ApertureValue'])
+    # SetGPSLocation(ipmPhotoPath, lat, lng)
     return lng, lat
 
 def ToDeg(value, loc):
@@ -108,8 +109,8 @@ def TransferGPS(photoPath, ipmPhotoPath):
     exifBytes = piexif.dump(exifDict)
     piexif.insert(exifBytes, ipmPhotoPath)
 
-# i = 4
-# photoPath = 'Images/road' + str(i) + '.jpg'
-# ipmPhotoPath = 'Images/road' + str(i) + '_ipm.jpg'
-# TransferGPS(photoPath, ipmPhotoPath)
+i = 4
+photoPath = 'Images/road' + str(i) + '.jpg'
+ipmPhotoPath = 'Images/road' + str(i) + '_ipm.png'
+PhotoGPS(photoPath, ipmPhotoPath)
 
