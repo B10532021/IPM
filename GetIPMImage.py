@@ -1,5 +1,6 @@
 from GetInfo import GetInfo
 from GetVanishingPoint import GetVanishingPoint
+from RotationImage import RotationImage
 from TransformImage2Ground import TransformImage2Ground
 from TransformGround2Image import TransformGround2Image
 import cv2
@@ -38,6 +39,8 @@ ipmInfo = Info({
     "bottom": height
 })
 # IPM
+
+R = RotationImage(R, cameraInfo)
 vpp = GetVanishingPoint(cameraInfo)
 vp_x = vpp[0][0]
 vp_y = vpp[1][0]
