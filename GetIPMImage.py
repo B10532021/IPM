@@ -102,7 +102,7 @@ for i in range(0, outRow):
 # show the result
 while True:
     cv2.imshow('img', outImage)
-    if cv2.waitKey(20) & 0xFF == 27:
+    if cv2.waitKey():
         break
 
 outImage = outImage * 255
