@@ -92,6 +92,9 @@ for i in range(0, outRow):
             y2 = np.int32(vi+0.5)
             x = ui-float(x1)
             y = vi-float(y1)
+            if RR.shape[0] <= y2 or RR.shape[0] <= y1 or RR.shape[1] <= x2 or RR.shape[1] <= x1\
+            or y2 < 0 or y1 < 0 or x2 < 0 or x1 < 0:
+                continue
             outImage[i, j, 0] = float(RR[y1, x1, 0])*(1-x)*(1-y)+float(RR[y1, x2, 0])*x*(1-y)+float(RR[y2, x1, 0])*(1-x)*y+float(RR[y2, x2, 0])*x*y
             outImage[i, j, 1] = float(RR[y1, x1, 1])*(1-x)*(1-y)+float(RR[y1, x2, 1])*x*(1-y)+float(RR[y2, x1, 1])*(1-x)*y+float(RR[y2, x2, 1])*x*y
             outImage[i, j, 2] = float(RR[y1, x1, 2])*(1-x)*(1-y)+float(RR[y1, x2, 2])*x*(1-y)+float(RR[y2, x1, 2])*(1-x)*y+float(RR[y2, x2, 2])*x*y
