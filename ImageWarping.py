@@ -10,7 +10,7 @@ for i in range(rows):
     for j in range(cols):
         offset_x = 50
         offset_y = int(180.0 * math.sin(2 * 3.14 * -j / (2*rows)))
-        if i+offset_y > 0 and j + offset_x < rows:
+        if i+offset_y > 0 and j + offset_x < rows and j + offset_x >= 0:
             img_output[i,j] = img[(i+offset_y) % rows, j+offset_x]
         else:
             img_output[i,j] = 0
