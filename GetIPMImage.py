@@ -13,28 +13,28 @@ class Info(object):
     def __getattr__(self, name):
         return self.dct[name]
 
-
-I = cv2.imread('Images/pic.jpg')
+pic = 16
+I = cv2.imread('../road5/'+str(pic)+'_rotate.jpg')
 R = I[:, :, :]
 height = int(I.shape[0]) # row y
 width = int(I.shape[1]) # col x
 
 cameraInfo = Info({
-    "focalLengthX": 700, # 1200.6831,         # focal length x
-    "focalLengthY": 700, # 1200.6831,         # focal length y
+    "focalLengthX": int(width / 100) * 100, # 1200.6831,         # focal length x
+    "focalLengthY": int(height / 100) * 100, # 1200.6831,         # focal length y
     "opticalCenterX": int(width / 2), # 638.1608,        # optical center x
     "opticalCenterY": int(height / 2), # 738.8648,       # optical center y
     "cameraHeight": 1500, # 1879.8,  # camera height in `mm`
-    "pitch": 15,           # rotation degree around x
-    "yaw": 0.0,              # rotation degree around y
+    "pitch": 2.5,           # rotation degree around x
+    "yaw": 0,              # rotation degree around y
     "roll": 0              # rotation degree around z
 })
 ipmInfo = Info({
     "inputWidth": width,
     "inputHeight": height,
-    "left": 100,
-    "right": width-100,
-    "top": 380,
+    "left": 50,
+    "right": width-50,
+    "top": 2600,
     "bottom": height
 })
 # IPM
@@ -43,7 +43,7 @@ vp_x = vpp[0][0]
 vp_y = vpp[1][0]
 ipmInfo.top = float(max(int(vp_y), ipmInfo.top))
 uvLimitsp = np.array([[vp_x, ipmInfo.right, ipmInfo.left, vp_x],
-             [ipmInfo.top, ipmInfo.top, ipmInfo.top, ipmInfo.bottom]], np.float32)
+            [ipmInfo.top, ipmInfo.top, ipmInfo.top, ipmInfo.bottom]], np.float32)
 
 xyLimits = TransformImage2Ground(uvLimitsp, cameraInfo)
 row1 = xyLimits[0, :]
@@ -53,7 +53,7 @@ xfMax = max(row1)
 yfMin = min(row2)
 yfMax = max(row2)
 xyRatio = (xfMax - xfMin)/(yfMax - yfMin)
-outImage = np.zeros((640,640,4), np.float32)
+outImage = np.zeros((640,960,4), np.float32)
 outImage[:,:,3] = 255
 outRow = int(outImage.shape[0])
 outCol = int(outImage.shape[1])
@@ -93,6 +93,7 @@ for i in range(0, outRow):
             outImage[i, j, 1] = float(RR[y1, x1, 1])*(1-x)*(1-y)+float(RR[y1, x2, 1])*x*(1-y)+float(RR[y2, x1, 1])*(1-x)*y+float(RR[y2, x2, 1])*x*y
             outImage[i, j, 2] = float(RR[y1, x1, 2])*(1-x)*(1-y)+float(RR[y1, x2, 2])*x*(1-y)+float(RR[y2, x1, 2])*(1-x)*y+float(RR[y2, x2, 2])*x*y
 
+outImage[-1,:] = 0.0 
 # show the result
 while True:
     cv2.imshow('img', outImage)
@@ -101,4 +102,4 @@ while True:
 
 outImage = outImage * 255
 # save image
-cv2.imwrite('Images/pic_ipm.png',outImage)
+cv2.imwrite('../road5/'+str(pic)+'.png',outImage)
